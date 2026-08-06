@@ -37,6 +37,7 @@ export default function Page() {
 
   return (
     <main className="flex min-h-screen w-full items-center justify-center bg-secondary">
+      <header>hello header</header>
       <div className="w-200 space-y-4 rounded-2xl border bg-background p-7">
         <h2 className="flex items-center gap-2 text-2xl font-semibold">
           <Sparkles />
