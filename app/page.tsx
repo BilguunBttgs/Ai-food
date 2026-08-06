@@ -1,19 +1,57 @@
-import { Button } from "@/components/ui/button"
+"use client"
+import { ArticleForm } from "@/components/ArticleForm"
+import { SummerySection } from "@/components/SummerySection"
+import { useAuth } from "@clerk/nextjs"
+import axios from "axios"
+import { Sparkles } from "lucide-react"
+import { useState } from "react"
 
 export default function Page() {
+  const [title, setTitle] = useState("")
+  const [content, setContent] = useState("")
+
+  const [summery, setSummery] = useState("")
+
+  const { userId } = useAuth()
+
+  const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    setTitle(value)
+  }
+
+  const handleContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target
+    setContent(value)
+  }
+
+  const summerizeArticle = async () => {
+    console.log("Minii bichsen utga", { title, content, userId })
+    const response = await axios.post("/api/article", {
+      title,
+      content,
+      userId,
+    })
+    console.log("response", response)
+    setSummery(response.data.summery)
+  }
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+    <main className="flex min-h-screen w-full items-center justify-center bg-secondary">
+      <div className="w-200 space-y-4 rounded-2xl border bg-background p-7">
+        <h2 className="flex items-center gap-2 text-2xl font-semibold">
+          <Sparkles />
+          Article Quiz Generator
+        </h2>
+        {summery ? (
+          <SummerySection title={title} content={content} summery={summery} />
+        ) : (
+          <ArticleForm
+            handleContent={handleContent}
+            handleTitle={handleTitle}
+            summerizeArticle={summerizeArticle}
+          />
+        )}
       </div>
-    </div>
+    </main>
   )
 }
